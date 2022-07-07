@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const http = require('http')
-const url = 'http://localhost:5129/CollectionsApi' + '/Collections/topics'
+const url = process.env.NEXT_PUBLIC_API + '/Collections/topics'
 http
   .get(url, (res) => {
     let data = ''
