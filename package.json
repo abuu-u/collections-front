@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "TOPICS_URL=http://localhost:5129/CollectionsApi/Collections/topics node ./download-topics.js && next dev",
-    "build": "TOPICS_URL=http://152.67.78.133/CollectionsApi/Collections/topics node ./download-topics.js && next build",
+    "dev": "TOPICS_URL=http://localhost:5129/collections/Collections/topics node ./download-topics.js && next dev",
+    "build": "TOPICS_URL=http://152.67.78.133/collections/Collections/topics node ./download-topics.js && next build",
     "start": "next start",
     "lint": "next lint"
   },

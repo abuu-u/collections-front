@@ -98,9 +98,7 @@ export const authSlice = createSlice({
       })
 
       .addCase(logout.fulfilled, (state) => {
-        state.error = undefined
         state.name = undefined
-        state.status = 'idle'
       })
   },
 })
