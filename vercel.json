@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/CollectionsApi/:match*",
-      "destination": "http://152.67.78.133/collectionsApi/:match*"
+      "destination": "http://152.67.78.133/CollectionsApi/:match*"
     }
   ]
 }
