@@ -1,20 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { AxiosErrorResponse } from '../../shared/apis/error-response'
+import { ErrorResponse } from 'shared/apis/error-response'
 import {
   AuthenticationResponse,
   LoginRequest,
   loginUser,
   RegisterRequest,
   registerUser,
-} from '../../shared/apis/users-api'
-import { RootState } from '../../shared/lib/store'
-import { getName, removeName, setName } from '../../shared/localstorage/name'
-import { removeToken, setToken } from '../../shared/localstorage/token'
+} from 'shared/apis/users-api'
+import { RootState } from 'shared/lib/store'
+import { getName, removeName, setName } from 'shared/localstorage/name'
+import { removeToken, setToken } from 'shared/localstorage/token'
 
 export interface AuthState {
   name?: string
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error?: string
+  error?: ErrorResponse
 }
 
 const initialState: AuthState = {
@@ -25,7 +25,7 @@ const initialState: AuthState = {
 export const login = createAsyncThunk<
   AuthenticationResponse,
   LoginRequest,
-  { rejectValue: string }
+  { rejectValue: ErrorResponse }
 >('auth/login', async (data, { rejectWithValue }) => {
   try {
     const response = await loginUser(data)
@@ -33,14 +33,14 @@ export const login = createAsyncThunk<
     setToken(response.data.jwtToken)
     return response.data
   } catch (error) {
-    return rejectWithValue((error as AxiosErrorResponse).response.data.message)
+    return rejectWithValue({ ...(error as Object) } as ErrorResponse)
   }
 })
 
 export const register = createAsyncThunk<
   AuthenticationResponse,
   RegisterRequest,
-  { rejectValue: string }
+  { rejectValue: ErrorResponse }
 >('auth/register', async (data, { rejectWithValue }) => {
   try {
     const response = await registerUser(data)
@@ -48,7 +48,7 @@ export const register = createAsyncThunk<
     setToken(response.data.jwtToken)
     return response.data
   } catch (error) {
-    return rejectWithValue((error as AxiosErrorResponse).response.data.message)
+    return rejectWithValue({ ...(error as Object) } as ErrorResponse)
   }
 })
 

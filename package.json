@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_API=http://localhost:5129/CollectionsApi node ./download-topics.js && next dev",
-    "build": "NEXT_PUBLIC_API=http://152.67.78.133/CollectionsApi node ./download-topics.js && next build",
+    "dev": "TOPICS_URL=http://localhost:5129/CollectionsApi/Collections/topics node ./download-topics.js && next dev",
+    "build": "TOPICS_URL=http://152.67.78.133/CollectionsApi/Collections/topics node ./download-topics.js && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -16,6 +16,7 @@
     "@hookform/resolvers": "^2.9.3",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
+    "@mui/x-data-grid": "^5.13.0",
     "@reduxjs/toolkit": "^1.8.3",
     "axios": "^0.27.2",
     "clsx": "^1.2.1",

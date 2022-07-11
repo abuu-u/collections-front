@@ -1,11 +1,12 @@
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import { NextLinkComposed } from 'common/link'
+import { logout, selectName } from 'features/auth/auth-slice'
 import { useState } from 'react'
-import { NextLinkComposed } from '../../common/link'
-import { logout, selectName } from '../../features/auth/auth-slice'
-import { routes } from '../../shared/constants/routes'
-import { useAppDispatch, useAppSelector } from '../../shared/lib/store'
+import { useIntl } from 'react-intl'
+import { routes } from 'shared/constants/routes'
+import { useAppDispatch, useAppSelector } from 'shared/lib/store'
 import CustomAvatar from './custom-avatar'
 
 const UserMenu = () => {
@@ -14,6 +15,8 @@ const UserMenu = () => {
   const name = useAppSelector(selectName)
 
   const [anchorElement, setAnchorElement] = useState<HTMLElement>()
+
+  const intl = useIntl()
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElement(event.currentTarget)
@@ -47,26 +50,35 @@ const UserMenu = () => {
         open={!!anchorElement}
         onClose={handleClose}
       >
-        {name ? (
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        ) : (
-          [
-            <MenuItem
-              key="login"
-              component={NextLinkComposed}
-              to={routes.LOGIN}
-            >
-              Login
-            </MenuItem>,
-            <MenuItem
-              key="register"
-              component={NextLinkComposed}
-              to={routes.REGISTER}
-            >
-              Register
-            </MenuItem>,
-          ]
-        )}
+        {name
+          ? [
+              <MenuItem
+                key="my-collections"
+                component={NextLinkComposed}
+                to={routes.MY_COLLECTIONS}
+              >
+                {intl.formatMessage({ id: 'user-menu.my-collections' })}
+              </MenuItem>,
+              <MenuItem key="logout" onClick={handleLogout}>
+                {intl.formatMessage({ id: 'user-menu.logout' })}
+              </MenuItem>,
+            ]
+          : [
+              <MenuItem
+                key="login"
+                component={NextLinkComposed}
+                to={routes.LOGIN}
+              >
+                {intl.formatMessage({ id: 'user-menu.login' })}
+              </MenuItem>,
+              <MenuItem
+                key="register"
+                component={NextLinkComposed}
+                to={routes.REGISTER}
+              >
+                {intl.formatMessage({ id: 'user-menu.register' })}
+              </MenuItem>,
+            ]}
       </Menu>
     </>
   )

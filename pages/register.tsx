@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup'
+import Input from 'common/input'
+import AuthForm from 'features/auth/auth-form'
+import { register as registerUser } from 'features/auth/auth-slice'
+import { registerSchema } from 'features/auth/user-validation'
 import { NextPage } from 'next'
 import { useForm } from 'react-hook-form'
-import Input from '../common/input'
-import AuthForm from '../features/auth/auth-form'
-import { register as registerUser } from '../features/auth/auth-slice'
-import { RegisterRequest } from '../shared/apis/users-api'
-import { useAppDispatch } from '../shared/lib/store'
-import { registerSchema } from '../shared/validation/user-validation'
+import { RegisterRequest } from 'shared/apis/users-api'
+import { useAppDispatch } from 'shared/lib/store'
 
 const Register: NextPage = () => {
   const {

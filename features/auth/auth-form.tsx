@@ -1,8 +1,9 @@
-import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { red } from '@mui/material/colors'
 import Typography from '@mui/material/Typography'
+import MainLayout from 'common/layout/main-layout'
+import Loading from 'common/loading'
 import { useRouter } from 'next/router'
 import {
   ComponentType,
@@ -10,9 +11,8 @@ import {
   PropsWithChildren,
   useEffect,
 } from 'react'
-import MainLayout from '../../common/layout/main-layout'
-import { routes } from '../../shared/constants/routes'
-import { useAppDispatch, useAppSelector } from '../../shared/lib/store'
+import { routes } from 'shared/constants/routes'
+import { useAppDispatch, useAppSelector } from 'shared/lib/store'
 import {
   reset,
   selectAuthError,
@@ -53,10 +53,7 @@ const AuthForm: ComponentType<PropsWithChildren<Properties>> = ({
 
   return (
     <MainLayout>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={status === 'loading'}
-      />
+      <Loading open={status === 'loading'} />
       <Box
         sx={{
           display: 'flex',
@@ -64,7 +61,6 @@ const AuthForm: ComponentType<PropsWithChildren<Properties>> = ({
           width: 300,
           m: 'auto',
         }}
-        onSubmit={onSubmit}
       >
         <Typography component="h1" variant="h4" textAlign="center" mb="20px">
           {formName}
@@ -79,11 +75,15 @@ const AuthForm: ComponentType<PropsWithChildren<Properties>> = ({
             padding="10px"
             bgcolor={red[300]}
           >
-            {error}
+            {error?.message}
           </Typography>
         )}
 
-        <Box component="form" sx={{ display: 'grid', gap: '15px' }}>
+        <Box
+          component="form"
+          sx={{ display: 'grid', gap: '15px' }}
+          onSubmit={onSubmit}
+        >
           {children}
 
           <Button type="submit" variant="contained" fullWidth>

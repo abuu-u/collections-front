@@ -1,7 +1,7 @@
 import createEmotionServer from '@emotion/server/create-instance'
 import { getInitColorSchemeScript } from '@mui/material/styles'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
-import createEmotionCache from '../shared/lib/create-emotion-cache'
+import createEmotionCache from 'shared/lib/create-emotion-cache'
 
 export default class MyDocument extends Document {
   render() {

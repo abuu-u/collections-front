@@ -1,4 +1,70 @@
 {
   "auth.login": "Login",
-  "auth.register": "Register"
+  "auth.register": "Register",
+
+  "users-grid.name": "Name",
+  "users-grid.email": "Email",
+  "users-grid.status": "Status",
+  "users-grid.admin": "Admin",
+  "users-page.header": "Users",
+  "users-page.block-users": "Block",
+  "users-page.unblock-users": "Unblock",
+  "users-page.promote-users": "Promote",
+  "users-page.demote-users": "Demote",
+  "users-page.delete-selected-users": "Delete",
+
+  "my-collections-page.header": "My collections",
+  "my-collections-page.create": "Create",
+  "my-collections-page.cancel": "Cancel",
+  "my-collections-page.add-field": "Add field",
+  "my-collections-page.fields": "Fields",
+  "my-collections-page.name": "Name",
+  "my-collections-page.description": "Description",
+  "my-collections-page.string": "String",
+  "my-collections-page.multiLineString": "Multiline string",
+  "my-collections-page.int": "Number",
+  "my-collections-page.bool": "Boolean",
+  "my-collections-page.dateTime": "Date",
+  "my-collections-page.img": "Image",
+  "my-collections-page.edit": "Edit",
+  "my-collections-page.delete": "Delete",
+  "my-collections-page.tags": "Tags",
+
+  "collection-items.header": "Items",
+
+  "item.create": "Create",
+  "item.edit": "Edit",
+  "item.tag": "Tag",
+  "item.add": "Add",
+
+  "navigation.home": "Home",
+
+  "user-menu.my-collections": "My collections",
+  "user-menu.logout": "Logout",
+  "user-menu.login": "Login",
+  "user-menu.register": "Register",
+
+  "search.placeholder": "Search…",
+
+  "search-page.items": "Items",
+  "search-page.collections": "Collections",
+
+  "main-page.tags": "Tags",
+  "main-page.lastest-items": "Lastest items",
+  "main-page.largest-collections": "Largest collections",
+  "main-page.header": "Home",
+  "main-page.collection": "Collection",
+  "main-page.author": "Author",
+
+  "item-page.comments": "Comments",
+  "item-page.comment": "Comment",
+  "item-page.leave-a-comment": "Leave a comment",
+  "item-page.add": "Add",
+  "main-page.likes": "Likes",
+
+  "validation.required": "Field is required",
+  "validation.email": "Incorrect email address",
+  "validation.max": "Exceeds max value",
+  "validation.min": "Below min value",
+  "validation.must-not-be-empty": "Must not be empty"
 }

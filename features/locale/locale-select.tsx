@@ -2,7 +2,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { useRouter } from 'next/router'
 import { ComponentType } from 'react'
-import { setLocale } from '../../shared/cookie/locale'
+import { setLocale } from 'shared/cookie/locale'
 
 interface Properties {}
 

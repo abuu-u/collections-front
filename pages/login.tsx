@@ -1,13 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup'
+import Input from 'common/input'
+import AuthForm from 'features/auth/auth-form'
+import { login } from 'features/auth/auth-slice'
+import { loginSchema } from 'features/auth/user-validation'
 import { NextPage } from 'next'
 import { useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
-import Input from '../common/input'
-import AuthForm from '../features/auth/auth-form'
-import { login } from '../features/auth/auth-slice'
-import { LoginRequest } from '../shared/apis/users-api'
-import { useAppDispatch } from '../shared/lib/store'
-import { loginSchema } from '../shared/validation/user-validation'
+import { LoginRequest } from 'shared/apis/users-api'
+import { useAppDispatch } from 'shared/lib/store'
 
 const Login: NextPage = () => {
   const {

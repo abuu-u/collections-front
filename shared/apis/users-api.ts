@@ -18,7 +18,14 @@ export interface GetUsersRequest {
   count: number
 }
 
+export type ModificationType = 'block' | 'unblock' | 'promote' | 'demote'
+
 export interface ModifyUsersRequest {
+  modification: ModificationType
+  ids: number[]
+}
+
+export interface DeleteUsersRequest {
   ids: number[]
 }
 
@@ -37,6 +44,7 @@ export interface UserData {
 
 export interface GetUsersResponse {
   pagesCount: number
+  usersCount: number
   users: UserData[]
 }
 
@@ -63,27 +71,15 @@ export const getUsers = async (parameters: GetUsersRequest) => {
   return response
 }
 
-export const blockUsers = async (data: ModifyUsersRequest) => {
-  const response = await apiWithJwt.put(`${urls.USERS}/block`, data.ids)
+export const modifyUsers = async (data: ModifyUsersRequest) => {
+  const response = await apiWithJwt.put(
+    `${urls.USERS}/${data.modification}`,
+    data.ids,
+  )
   return response
 }
 
-export const unBlockUsers = async (data: ModifyUsersRequest) => {
-  const response = await apiWithJwt.put(`${urls.USERS}/unblock`, data.ids)
-  return response
-}
-
-export const deleteUsers = async (data: ModifyUsersRequest) => {
+export const deleteUsers = async (data: DeleteUsersRequest) => {
   const response = await apiWithJwt.delete(urls.USERS, { data: data.ids })
-  return response
-}
-
-export const promoteUsers = async (data: ModifyUsersRequest) => {
-  const response = await apiWithJwt.put(`${urls.USERS}/promote`, data.ids)
-  return response
-}
-
-export const demoteUsers = async (data: ModifyUsersRequest) => {
-  const response = await apiWithJwt.put(`${urls.USERS}/demote`, data.ids)
   return response
 }

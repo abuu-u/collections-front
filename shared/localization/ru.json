@@ -1,4 +1,70 @@
 {
   "auth.login": "Логин",
-  "auth.register": "Регистрация"
+  "auth.register": "Регистрация",
+
+  "users-grid.name": "Имя",
+  "users-grid.email": "Email",
+  "users-grid.status": "Статус",
+  "users-grid.admin": "Админ",
+  "users-page.header": "Пользователи",
+  "users-page.block-users": "Заблокировать",
+  "users-page.unblock-users": "Разблокировать",
+  "users-page.promote-users": "Повысить",
+  "users-page.demote-users": "Понизить",
+  "users-page.delete-selected-users": "Удалить",
+
+  "my-collections-page.header": "Мои коллекции",
+  "my-collections-page.create": "Создать",
+  "my-collections-page.cancel": "Отменить",
+  "my-collections-page.add-field": "Добавить поле",
+  "my-collections-page.fields": "Поля",
+  "my-collections-page.name": "Название",
+  "my-collections-page.description": "Описание",
+  "my-collections-page.string": "Строка",
+  "my-collections-page.multiLineString": "Многострочная строка",
+  "my-collections-page.int": "Число",
+  "my-collections-page.bool": "Булевый",
+  "my-collections-page.dateTime": "Дата",
+  "my-collections-page.img": "Изображение",
+  "my-collections-page.edit": "Изменить",
+  "my-collections-page.delete": "Удалить",
+  "my-collections-page.tags": "Тэги",
+
+  "collection-items.header": "Айтемы",
+
+  "item.create": "Создать",
+  "item.edit": "Изменить",
+  "item.tag": "Тэг",
+  "item.add": "Добавить",
+
+  "navigation.home": "Главная",
+
+  "user-menu.my-collections": "Мои коллекции",
+  "user-menu.logout": "Выход",
+  "user-menu.login": "Логин",
+  "user-menu.register": "Регистрация",
+
+  "search.placeholder": "Поиск…",
+
+  "search-page.items": "Айтемы",
+  "search-page.collections": "Коллекции",
+
+  "main-page.tags": "Тэги",
+  "main-page.lastest-items": "Последние добавленные айтемы",
+  "main-page.largest-collections": "Самые большые коллекции",
+  "main-page.header": "Главная",
+  "main-page.collection": "Коллекция",
+  "main-page.author": "Автор",
+
+  "item-page.comments": "Комментарии",
+  "item-page.comment": "Комментарий",
+  "item-page.leave-a-comment": "Оставьте комментарий",
+  "item-page.add": "Добавить",
+  "main-page.likes": "Лайки",
+
+  "validation.required": "Обязательное поле",
+  "validation.email": "Некорректный email адрес",
+  "validation.max": "Больше чем маскимальное значние",
+  "validation.min": "Меньше чем минимальное значние",
+  "validation.must-not-be-empty": "Не должно быть пустым"
 }

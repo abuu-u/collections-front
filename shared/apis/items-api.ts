@@ -1,4 +1,4 @@
-import { urls } from '../constants/urls'
+import { urls } from 'shared/constants/urls'
 import { api } from './api'
 import { apiWithJwt } from './api-with-jwt'
 import { FieldData, GetTagsResponse } from './collections-api'
@@ -101,6 +101,16 @@ export interface GetItemResponse {
   dateTimeValues: DateTimeValueData[]
 }
 
+export interface GetItemForEditingResponse {
+  name: string
+  tags: string[]
+  fields: FieldData[]
+  intFields: IntValueData[]
+  boolFields: BoolValueData[]
+  stringFields: StringValueData[]
+  dateTimeFields: DateTimeValueData[]
+}
+
 export interface GetLatestItemsRequest {
   count: number
 }
@@ -111,7 +121,7 @@ export interface LatestItemOwnerData {
 
 export interface LatestCollectionData {
   name: string
-  ownerData: LatestItemOwnerData
+  owner: LatestItemOwnerData
 }
 
 export interface LatestItemData {
@@ -138,7 +148,7 @@ export const createItem = async (
   collectionId: number,
 ) => {
   const response = await apiWithJwt.post(
-    `${urls.COLLECTIONS}/${collectionId}/${urls.ITEMS}`,
+    `${urls.COLLECTIONS}/${collectionId}${urls.ITEMS}`,
     data,
   )
   return response
@@ -146,7 +156,7 @@ export const createItem = async (
 
 export const editItem = async (data: EditItemRequest, collectionId: number) => {
   const response = await apiWithJwt.put(
-    `${urls.COLLECTIONS}/${collectionId}/${urls.ITEMS}`,
+    `${urls.COLLECTIONS}/${collectionId}${urls.ITEMS}`,
     data,
   )
   return response
@@ -154,7 +164,7 @@ export const editItem = async (data: EditItemRequest, collectionId: number) => {
 
 export const deleteItem = async (data: DeleteItemRequest) => {
   const response = await apiWithJwt.delete(
-    `${urls.COLLECTIONS}/${data.collectionId}/${urls.ITEMS}/${data.itemId}`,
+    `${urls.COLLECTIONS}/${data.collectionId}${urls.ITEMS}/${data.itemId}`,
   )
   return response
 }
@@ -164,7 +174,7 @@ export const deleteItems = async (
   collectionId: number,
 ) => {
   const response = await apiWithJwt.delete(
-    `${urls.COLLECTIONS}/${collectionId}/${urls.ITEMS}`,
+    `${urls.COLLECTIONS}/${collectionId}${urls.ITEMS}`,
     { data: data.ids },
   )
   return response
@@ -206,7 +216,16 @@ export const unlike = async (itemId: number) => {
 }
 
 export const getItem = async (itemId: number) => {
-  const response = await api.get<GetItemResponse>(`${urls.ITEMS}/${itemId}`)
+  const response = await apiWithJwt.get<GetItemResponse>(
+    `${urls.ITEMS}/${itemId}`,
+  )
+  return response
+}
+
+export const getItemForEditing = async (itemId: number) => {
+  const response = await apiWithJwt.get<GetItemForEditingResponse>(
+    `${urls.ITEMS}/${itemId}/for-edit`,
+  )
   return response
 }
 

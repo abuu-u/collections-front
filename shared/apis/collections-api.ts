@@ -1,4 +1,4 @@
-import { urls } from '../constants/urls'
+import { urls } from 'shared/constants/urls'
 import { api } from './api'
 import { apiWithJwt } from './api-with-jwt'
 import { DateTimeValueData, StringValueData } from './items-api'
@@ -28,7 +28,7 @@ export interface GetMyCollectionsResponse {
   collections: CollectionData[]
 }
 
-export enum FieldType {
+export const enum FieldType {
   String,
   MultiLineString,
   Int,
@@ -36,31 +36,61 @@ export enum FieldType {
   DateTime,
 }
 
+export const fieldTypes = [
+  FieldType.String,
+  FieldType.MultiLineString,
+  FieldType.Int,
+  FieldType.Bool,
+  FieldType.DateTime,
+]
+
+export const fieldTypeNames = {
+  [FieldType.String]: 'string',
+  [FieldType.MultiLineString]: 'multiLineString',
+  [FieldType.Int]: 'int',
+  [FieldType.Bool]: 'bool',
+  [FieldType.DateTime]: 'dateTime',
+} as const
+
 export interface CreateFieldData {
   name: string
   fieldType: FieldType
 }
 
-export interface CreateCollectionRequest {
-  name: string
-  description: string
-  topicId: number
+export interface EditCollectionData {
+  name?: string
+  description?: string
+  topicId?: number
+}
+
+export type CreateCollectionRequest = Required<EditCollectionData> & {
   fields: CreateFieldData[]
   imageUrl?: string
 }
 
-export interface EditCollectionRequest {
+export interface EditCollectionFieldData {
   id: number
-  name?: string
-  description?: string
-  topicId?: number
-  fields: FieldData[]
+  name: string
+}
+
+export type EditCollectionRequest = EditCollectionData & {
+  id: number
+  fields: EditCollectionFieldData[]
   imageUrl?: string
+}
+
+export interface GetCollectionResponse {
+  id: number
+  name: string
+  description: string
+  topicId: number
+  imageUrl: string | null
+  fields: FieldData[]
 }
 
 export interface GetCollectionItemsRequest {
   sortFieldId?: number
-  sortFieldType?: FieldType
+  sortBy?: 'asc' | 'desc' | null
   filterName?: string
   filterTags?: string[]
 }
@@ -73,6 +103,7 @@ export interface CollectionItemData {
 }
 
 export interface GetCollectionItemsResponse {
+  isOwner: boolean
   items: CollectionItemData[]
 }
 
@@ -129,14 +160,21 @@ export const deleteCollection = async (id: number) => {
   return response
 }
 
+export const getCollection = async (id: number) => {
+  const response = await apiWithJwt.get<GetCollectionResponse>(
+    `${urls.COLLECTIONS}/${id}`,
+  )
+  return response
+}
+
 export const getCollectionItems = async (
   data: GetCollectionItemsRequest,
   id: number,
 ) => {
   const { filterTags, ...restData } = data
   const filterTagsParameter = filterTags?.join('&filterTags=')
-  const response = await api.get<GetCollectionItemsResponse>(
-    `${urls.COLLECTIONS}/${id}`,
+  const response = await apiWithJwt.get<GetCollectionItemsResponse>(
+    `${urls.COLLECTIONS}/${id}/items`,
     {
       params: { ...restData, filterTags: filterTagsParameter },
     },

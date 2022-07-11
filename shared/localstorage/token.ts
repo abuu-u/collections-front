@@ -1,4 +1,4 @@
-import { localstorageKeys } from '../constants/localstorage-keys'
+import { localstorageKeys } from 'shared/constants/localstorage-keys'
 
 export const setToken = (token: string) => {
   localStorage.setItem(localstorageKeys.TOKEN, token)

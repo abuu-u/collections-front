@@ -6,20 +6,10 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { IntlProvider } from 'react-intl'
 import { Provider } from 'react-redux'
-import createEmotionCache from '../shared/lib/create-emotion-cache'
-import { store } from '../shared/lib/store'
-import enMessages from '../shared/localization/en.json'
-import { locales } from '../shared/localization/locales'
-import ruMessages from '../shared/localization/ru.json'
-import topics from '../shared/localization/topics.json'
-
-// eslint-disable-next-line no-console
-console.log(topics)
-
-const messages = {
-  [locales.EN]: enMessages,
-  [locales.RU]: ruMessages,
-}
+import createEmotionCache from 'shared/lib/create-emotion-cache'
+import { store } from 'shared/lib/store'
+import { Locales } from 'shared/localization/locales'
+import { messages } from 'shared/localization/messages'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -40,7 +30,7 @@ function MyApp(properties: MyAppProperties) {
       <IntlProvider
         locale={locale!}
         defaultLocale={defaultLocale}
-        messages={messages[locale!]}
+        messages={messages[locale! as Locales]}
       >
         <CacheProvider value={emotionCache}>
           <Head>
