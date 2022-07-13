@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Input from 'common/input'
 import Loading from 'common/loading'
+import { useUser } from 'features/auth/use-user'
 import CollectionForm, {
   CollectionFormControl,
   CollectionFormRegister,
@@ -30,6 +31,8 @@ import { routes } from 'shared/constants/routes'
 import { useAppDispatch, useAppSelector } from 'shared/lib/store'
 
 const CollectionEdit: NextPage = () => {
+  useUser()
+
   const router = useRouter()
 
   const intl = useIntl()

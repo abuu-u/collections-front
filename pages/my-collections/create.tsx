@@ -8,6 +8,7 @@ import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Input from 'common/input'
+import { useUser } from 'features/auth/use-user'
 import CollectionForm, {
   CollectionFormControl,
   CollectionFormRegister,
@@ -31,6 +32,8 @@ import { useAppDispatch } from 'shared/lib/store'
 const DEFAULT_FIELD = { name: '', fieldType: FieldType.String }
 
 const CollectionCreate: NextPage = () => {
+  useUser()
+
   const {
     control,
     register,

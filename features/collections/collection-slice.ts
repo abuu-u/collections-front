@@ -54,15 +54,21 @@ export const getCollectionById = createAsyncThunk<
 export const createUserCollection = createAsyncThunk<
   void,
   CreateCollectionRequest,
-  { rejectValue: ErrorResponse }
->('collection/getCollectionById', async (data, { rejectWithValue }) => {
-  try {
-    const response = await createCollection(data)
-    return response.data
-  } catch (error) {
-    return rejectWithValue({ ...(error as Object) } as ErrorResponse)
-  }
-})
+  { rejectValue: ErrorResponse; state: RootState }
+>(
+  'collection/getCollectionById',
+  async (data, { rejectWithValue, getState }) => {
+    try {
+      const response = await createCollection({
+        ...data,
+        imageUrl: getState().collection.data.imageUrl ?? undefined,
+      })
+      return response.data
+    } catch (error) {
+      return rejectWithValue({ ...(error as Object) } as ErrorResponse)
+    }
+  },
+)
 
 export const upladCollectionImage = createAsyncThunk<
   SaveImageResponse,
@@ -80,15 +86,21 @@ export const upladCollectionImage = createAsyncThunk<
 export const editUserCollection = createAsyncThunk<
   void,
   EditCollectionRequest,
-  { rejectValue: ErrorResponse }
->('collection/editUserCollection', async (data, { rejectWithValue }) => {
-  try {
-    const response = await editCollection(data)
-    return response.data
-  } catch (error) {
-    return rejectWithValue({ ...(error as Object) } as ErrorResponse)
-  }
-})
+  { rejectValue: ErrorResponse; state: RootState }
+>(
+  'collection/editUserCollection',
+  async (data, { rejectWithValue, getState }) => {
+    try {
+      const response = await editCollection({
+        ...data,
+        imageUrl: getState().collection.data.imageUrl ?? undefined,
+      })
+      return response.data
+    } catch (error) {
+      return rejectWithValue({ ...(error as Object) } as ErrorResponse)
+    }
+  },
+)
 
 export const collectionSlice = createSlice({
   name: 'collection',
