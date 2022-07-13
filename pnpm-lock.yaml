@@ -10,7 +10,6 @@ specifiers:
   '@mui/material': ^5.8.7
   '@mui/x-data-grid': ^5.13.0
   '@reduxjs/toolkit': ^1.8.3
-  '@types/http-proxy': ^1.17.9
   '@types/js-cookie': ^3.0.2
   '@types/node': 18.0.1
   '@types/react': 18.0.14
@@ -22,9 +21,9 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-prettier: ^4.2.1
   eslint-plugin-unicorn: ^43.0.0
-  http-proxy: ^1.18.1
   js-cookie: ^3.0.1
   next: 12.2.0
+  next-http-proxy-middleware: ^1.2.4
   prettier: ^2.7.1
   react: 18.2.0
   react-dom: 18.2.0
@@ -46,9 +45,9 @@ dependencies:
   '@reduxjs/toolkit': 1.8.3_kkwg4cbsojnjnupd3btipussee
   axios: 0.27.2
   clsx: 1.2.1
-  http-proxy: 1.18.1
   js-cookie: 3.0.1
   next: 12.2.0_biqbaboplfbrettd7655fr4n2y
+  next-http-proxy-middleware: 1.2.4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.33.1_react@18.2.0
@@ -57,7 +56,6 @@ dependencies:
   yup: 0.32.11
 
 devDependencies:
-  '@types/http-proxy': 1.17.9
   '@types/js-cookie': 3.0.2
   '@types/node': 18.0.1
   '@types/react': 18.0.14
@@ -747,11 +745,11 @@ packages:
       hoist-non-react-statics: 3.3.2
     dev: false
 
-  /@types/http-proxy/1.17.9:
-    resolution: {integrity: sha512-QsbSjA/fSk7xB+UXlCT3wHBy5ai9wOcNDWwZAtud+jXhwOM3l+EYZh8Lng4+/6n8uar0J7xILzqftJdJ/Wdfkw==}
+  /@types/http-proxy/1.17.3:
+    resolution: {integrity: sha512-wIPqXANye5BbORbuh74exbwNzj+UWCwWyeEFJzUQ7Fq3W2NSAy+7x7nX1fgbEypr2/TdKqpeuxLnXWgzN533/Q==}
     dependencies:
       '@types/node': 18.0.1
-    dev: true
+    dev: false
 
   /@types/js-cookie/3.0.2:
     resolution: {integrity: sha512-6+0ekgfusHftJNYpihfkMu8BWdeHs9EOJuGcSofErjstGPfPGEu9yTu4t460lTzzAMl2cM5zngQJqPMHbbnvYA==}
@@ -767,7 +765,6 @@ packages:
 
   /@types/node/18.0.1:
     resolution: {integrity: sha512-CmR8+Tsy95hhwtZBKJBs0/FFq4XX7sDZHlGGf+0q+BRZfMbOTkzkj0AFAuTyXbObDIoanaBBW0+KEW+m3N16Wg==}
-    dev: true
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -2214,6 +2211,16 @@ packages:
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
+
+  /next-http-proxy-middleware/1.2.4:
+    resolution: {integrity: sha512-4ScStkj08nFL2IX0doJq8Hwrk1zOdKaOkxFGxRmV+lN4Oh/d6qDSqUKxfSew676qA07bhncj6vbKBVVpLKfZBA==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      '@types/http-proxy': 1.17.3
+      http-proxy: 1.18.1
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /next/12.2.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-B4j7D3SHYopLYx6/Ark0fenwIar9tEaZZFAaxmKjgcMMexhVJzB3jt7X+6wcdXPPMeUD6r09weUtnDpjox/vIA==}

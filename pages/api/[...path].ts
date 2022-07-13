@@ -1,17 +1,23 @@
-import httpProxy from 'http-proxy'
-const API_URL = process.env.NEXT_PUBLIC_API // The actual URL of your API
-const proxy = httpProxy.createProxyServer()
-// Make sure that we don't parse JSON bodies on this route:
+import { NextApiRequest, NextApiResponse } from 'next'
+import httpProxyMiddleware from 'next-http-proxy-middleware'
+
 export const config = {
   api: {
-    bodyParser: false,
+    externalResolver: true,
   },
 }
 
-const handler = (request: any, response: any) => {
-  if (process.env.NODE_ENV === 'production') {
-    proxy.web(request, response, { target: API_URL, changeOrigin: true })
-  }
+export default async function handler(
+  request: NextApiRequest,
+  response: NextApiResponse,
+) {
+  return httpProxyMiddleware(request, response, {
+    target: 'http://152.67.78.133/collections',
+    pathRewrite: [
+      {
+        patternStr: '^/api',
+        replaceStr: '',
+      },
+    ],
+  })
 }
-
-export default handler
