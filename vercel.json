@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/collections/:match*",
-      "destination": "http://152.67.78.133/collections/:match*"
+      "source": "/:match*",
+      "destination": "http://152.67.78.133/:match*"
     }
   ]
 }
