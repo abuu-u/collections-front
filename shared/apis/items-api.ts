@@ -34,7 +34,7 @@ export interface AddItemRequest {
 
 export interface EditItemRequest {
   id: number
-  name?: string
+  name: string
   tags: string[]
   intFields: IntValueData[]
   boolFields: BoolValueData[]

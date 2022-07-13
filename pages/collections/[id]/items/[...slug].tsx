@@ -31,7 +31,7 @@ import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { FieldType } from 'shared/apis/collections-api'
-import { AddItemRequest, EditItemRequest } from 'shared/apis/items-api'
+import { EditItemRequest } from 'shared/apis/items-api'
 import { routes } from 'shared/constants/routes'
 import { useAppDispatch, useAppSelector } from 'shared/lib/store'
 
@@ -57,14 +57,7 @@ const ItemCreate: NextPage = () => {
     reset: resetForm,
     formState: { errors },
   } = useForm<ItemCreateFields>({
-    defaultValues: {
-      ...data,
-      dateTimeFields: data.dateTimeFields.map((date) => ({
-        ...date,
-        value: date.value.slice(0, 10),
-      })),
-      tags: data.tags.map((tag) => ({ value: tag })),
-    },
+    defaultValues: data,
     resolver: yupResolver(itemSchema),
   })
 
@@ -78,37 +71,22 @@ const ItemCreate: NextPage = () => {
   })
 
   useEffect(() => {
-    resetForm({
-      ...data,
-      dateTimeFields: data.dateTimeFields.map((date) => ({
-        ...date,
-        value: date.value.slice(0, 10),
-      })),
-      tags: data.tags.map((tag) => ({ value: tag })),
-    })
+    resetForm(data)
   }, [resetForm, data])
 
   const [type, setType] = useState('')
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    const correctData = {
-      ...data,
-      dateTimeFields: data.dateTimeFields.map((it) => ({
-        fieldId: it.fieldId,
-        value: new Date(it.value).toISOString(),
-      })),
-      tags: data.tags.map((it) => it.value),
-    }
     const result = await (type === 'create'
       ? dispatch(
           createCollectionItem({
-            data: correctData as AddItemRequest,
+            data,
             collectionId: Number(router.query.id),
           }),
         )
       : dispatch(
           editCollectionItem({
-            data: correctData as EditItemRequest,
+            data,
             collectionId: Number(router.query.id),
           }),
         ))

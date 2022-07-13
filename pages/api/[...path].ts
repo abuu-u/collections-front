@@ -19,10 +19,7 @@ export default async function handler(
       request,
       {
         responseType: 'stream',
-        headers: {
-          ...(request.headers as AxiosRequestHeaders),
-          'Content-Type': request.headers['content-type']!,
-        },
+        headers: request.headers as AxiosRequestHeaders,
       },
     )
     data.pipe(response)

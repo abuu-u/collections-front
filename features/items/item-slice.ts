@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, isPending } from '@reduxjs/toolkit'
+import { ItemCreateFields } from 'pages/collections/[id]/items/[...slug]'
 import {
   FieldData,
   getFields,
@@ -7,10 +8,8 @@ import {
 } from 'shared/apis/collections-api'
 import { ErrorResponse } from 'shared/apis/error-response'
 import {
-  AddItemRequest,
   createItem,
   editItem,
-  EditItemRequest,
   getItemForEditing,
   GetItemForEditingResponse,
   searchTags,
@@ -44,16 +43,30 @@ const initialState: ItemState = {
   tags: [],
 }
 
+const formDataToItemData = (data: ItemCreateFields) => {
+  return {
+    ...data,
+    dateTimeFields: data.dateTimeFields.map((it) => ({
+      fieldId: it.fieldId,
+      value: new Date(it.value).toISOString(),
+    })),
+    tags: data.tags.map((it) => it.value),
+  }
+}
+
 export const createCollectionItem = createAsyncThunk<
   void,
   {
-    data: AddItemRequest
+    data: ItemCreateFields
     collectionId: number
   },
   { rejectValue: ErrorResponse }
 >('item/createCollectionItem', async (data, { rejectWithValue }) => {
   try {
-    const response = await createItem(data.data, data.collectionId)
+    const response = await createItem(
+      formDataToItemData(data.data),
+      data.collectionId,
+    )
     return response.data
   } catch (error) {
     return rejectWithValue({ ...(error as Object) } as ErrorResponse)
@@ -63,13 +76,16 @@ export const createCollectionItem = createAsyncThunk<
 export const editCollectionItem = createAsyncThunk<
   void,
   {
-    data: EditItemRequest
+    data: ItemCreateFields
     collectionId: number
   },
   { rejectValue: ErrorResponse }
 >('item/editCollectionItem', async (data, { rejectWithValue }) => {
   try {
-    const response = await editItem(data.data, data.collectionId)
+    const response = await editItem(
+      formDataToItemData(data.data),
+      data.collectionId,
+    )
     return response.data
   } catch (error) {
     return rejectWithValue({ ...(error as Object) } as ErrorResponse)
@@ -160,7 +176,17 @@ export const selectItemStatus = (state: RootState) => state.item.status
 export const selectItemError = (state: RootState) => state.item.error
 export const selectItemFields = (state: RootState) => state.item.fields
 export const selectTags = (state: RootState) => state.item.tags
-export const selectItem = (state: RootState) => state.item.data
+export const selectItem = (state: RootState) => {
+  const data = state.item.data
+  return {
+    ...data,
+    dateTimeFields: data.dateTimeFields.map((date) => ({
+      ...date,
+      value: date.value.slice(0, 10),
+    })),
+    tags: data.tags.map((tag) => ({ value: tag })),
+  }
+}
 
 const itemReducer = itemSlice.reducer
 
