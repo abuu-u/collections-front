@@ -12,10 +12,12 @@ import { NextLinkComposed } from 'common/link'
 import Loading from 'common/loading'
 import { useUser } from 'features/auth/use-user'
 import {
+  addTag,
   createCollectionItem,
   editCollectionItem,
   getItemFields,
   getItemForEdit,
+  removeTag,
   reset,
   selectItem,
   selectItemError,
@@ -28,7 +30,7 @@ import type { NextPage } from 'next'
 import DefaultErrorPage from 'next/error'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { FieldType } from 'shared/apis/collections-api'
 import { EditItemRequest } from 'shared/apis/items-api'
@@ -56,18 +58,9 @@ const ItemCreate: NextPage = () => {
     control,
     reset: resetForm,
     formState: { errors },
-  } = useForm<ItemCreateFields>({
+  } = useForm<EditItemRequest>({
     defaultValues: data,
     resolver: yupResolver(itemSchema),
-  })
-
-  const {
-    fields: tags,
-    append,
-    remove,
-  } = useFieldArray({
-    name: 'tags',
-    control,
   })
 
   useEffect(() => {
@@ -174,17 +167,17 @@ const ItemCreate: NextPage = () => {
         />
 
         <Stack direction="row" flexWrap="wrap" alignItems="flex-start">
-          {tags.map((item, index) => (
+          {data.tags.map((item, index) => (
             <Chip
               sx={{ margin: 1 }}
-              key={item.id}
-              label={item.value}
-              onDelete={() => remove(index)}
+              key={index}
+              label={item}
+              onDelete={() => dispatch(removeTag(index))}
             />
           ))}
         </Stack>
 
-        <TagCreator append={append} />
+        <TagCreator onAdd={(tag) => dispatch(addTag(tag))} />
 
         {fields
           .filter(
