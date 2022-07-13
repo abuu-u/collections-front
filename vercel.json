@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/task6/:match*",
-      "destination": "http://152.67.78.133/task6/:match*"
-    }
-  ]
-}
