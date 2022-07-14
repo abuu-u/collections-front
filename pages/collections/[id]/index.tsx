@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -5,8 +6,10 @@ import Typography from '@mui/material/Typography'
 import {
   getGridStringOperators,
   GridColumns,
+  GridColumnVisibilityModel,
   GridFilterModel,
   GridSortModel,
+  GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarExport,
   GridToolbarFilterButton,
@@ -17,9 +20,10 @@ import { NextLinkComposed } from 'common/link'
 import Loading from 'common/loading'
 import {
   deleteCollectionItems,
-  getCollectionFields,
+  getCollectionById,
   getItems,
   reset,
+  selectCollection,
   selectCollectionFields,
   selectCollectionisOwner,
   selectCollectionItems,
@@ -29,14 +33,21 @@ import {
   setSortBy,
   setSortFieldId,
 } from 'features/collections/collection-items-slice'
+import MuiMarkdown from 'mui-markdown'
 import type { NextPage } from 'next'
 import DefaultErrorPage from 'next/error'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { FieldType } from 'shared/apis/collections-api'
 import { routes } from 'shared/constants/routes'
 import { useAppDispatch, useAppSelector } from 'shared/lib/store'
+
+const DEFAULT_SHOWN_COLUMN_TYPES = new Set([
+  FieldType.DateTime,
+  FieldType.String,
+])
 
 const CollectionItems: NextPage = () => {
   const router = useRouter()
@@ -47,13 +58,14 @@ const CollectionItems: NextPage = () => {
 
   const status = useAppSelector(selectCollectionItemsStatus)
   const error = useAppSelector(selectCollectionItemsError)
-  const data = useAppSelector(selectCollectionItems)
+  const collection = useAppSelector(selectCollection)
+  const items = useAppSelector(selectCollectionItems)
   const fields = useAppSelector(selectCollectionFields)
   const isOwner = useAppSelector(selectCollectionisOwner)
 
   const handleSortModelChange = (model: GridSortModel) => {
     if (model.length > 0) {
-      dispatch(setSortBy(model[0].sort))
+      dispatch(setSortBy(model[0].sort ?? undefined))
       if (model[0].field === 'name') {
         dispatch(setSortFieldId(-1))
       } else {
@@ -71,6 +83,22 @@ const CollectionItems: NextPage = () => {
     dispatch(getItems(Number(router.query.id)))
   }
 
+  const [columnVisibilityModel, setColumnVisibilityModel] =
+    useState<GridColumnVisibilityModel>()
+
+  useEffect(() => {
+    if (fields.length > 0) {
+      setColumnVisibilityModel(
+        fields
+          .filter((field) => !DEFAULT_SHOWN_COLUMN_TYPES.has(field.fieldType))
+          // eslint-disable-next-line unicorn/no-array-reduce
+          .reduce((accumulator, column) => {
+            return { ...accumulator, [column.id]: false }
+          }, {} as Record<string, boolean>),
+      )
+    }
+  }, [fields])
+
   const columns: GridColumns = [
     {
       field: 'name',
@@ -87,26 +115,19 @@ const CollectionItems: NextPage = () => {
         )
       },
     },
-    ...(fields
-      .filter((field) => {
-        return (
-          field.fieldType === FieldType.String ||
-          field.fieldType === FieldType.DateTime
-        )
-      })
-      .map((field) => {
-        return {
-          field: field.id.toString(),
-          headerName: field.name,
-          width: 180,
-          filterable: false,
-        }
-      }) as GridColumns),
+    ...(fields.map((field) => {
+      return {
+        field: field.id.toString(),
+        headerName: field.name,
+        width: 180,
+        filterable: false,
+      }
+    }) as GridColumns),
   ]
 
   const selectedRows = useRef<number[]>([])
 
-  const rows = data.map((row) => {
+  const rows = items.map((row) => {
     let stringValuesObject: Record<number, string> = {}
     let dateTimeValuesObject: Record<number, string> = {}
 
@@ -172,7 +193,7 @@ const CollectionItems: NextPage = () => {
       const collectionId = Number(id)
       if (!Number.isNaN(collectionId)) {
         dispatch(getItems(collectionId))
-        dispatch(getCollectionFields(collectionId))
+        dispatch(getCollectionById(collectionId))
       } else {
         setIsNotFound(true)
       }
@@ -198,6 +219,30 @@ const CollectionItems: NextPage = () => {
       <Loading open={status === 'loading'} />
 
       <Typography component="h1" variant="h4" textAlign="center" mb="20px">
+        {collection.name}
+      </Typography>
+
+      {collection.imageUrl ? (
+        <Box
+          sx={{
+            width: '100%',
+            height: '200px',
+            position: 'relative',
+            mb: '20px',
+          }}
+        >
+          <Image
+            src={collection.imageUrl}
+            alt={`${collection.name} image`}
+            layout="fill"
+            objectFit="cover"
+          />
+        </Box>
+      ) : undefined}
+
+      <MuiMarkdown>{collection.description}</MuiMarkdown>
+
+      <Typography component="h2" variant="h5" textAlign="center" mb="20px">
         <FormattedMessage id="collection-items.header" />
       </Typography>
 
@@ -214,6 +259,10 @@ const CollectionItems: NextPage = () => {
       ) : undefined}
 
       <DataGrid
+        columnVisibilityModel={columnVisibilityModel}
+        onColumnVisibilityModelChange={(newModel) =>
+          setColumnVisibilityModel(newModel)
+        }
         components={{
           Toolbar: () => (
             <GridToolbarContainer>
@@ -232,6 +281,7 @@ const CollectionItems: NextPage = () => {
                   <FormattedMessage id="users-page.delete-selected-users" />
                 </Button>
               )}
+              <GridToolbarColumnsButton />
               <GridToolbarFilterButton />
               <GridToolbarExport />
             </GridToolbarContainer>

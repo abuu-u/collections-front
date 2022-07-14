@@ -5,11 +5,11 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit'
 import {
+  getCollection,
   getCollectionItems,
   GetCollectionItemsRequest,
   GetCollectionItemsResponse,
-  getFields,
-  GetFieldsResponse,
+  GetCollectionResponse,
 } from 'shared/apis/collections-api'
 import { ErrorResponse } from 'shared/apis/error-response'
 import { deleteItems, DeleteItemsRequest } from 'shared/apis/items-api'
@@ -21,8 +21,9 @@ import {
 } from 'shared/lib/store'
 
 export interface CollectionItemsState {
-  data: GetCollectionItemsResponse
-  fields: GetFieldsResponse['fields']
+  data: Omit<Omit<GetCollectionResponse, 'items'>, 'fields'>
+  items: GetCollectionResponse['items']
+  fields: GetCollectionResponse['fields']
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error?: ErrorResponse
   params: GetCollectionItemsRequest
@@ -30,11 +31,16 @@ export interface CollectionItemsState {
 
 const initialState: CollectionItemsState = {
   data: {
+    id: 0,
+    name: '',
+    description: '',
+    topicId: 0,
+    imageUrl: '',
     isOwner: false,
-    items: [],
   },
-  params: {},
+  items: [],
   fields: [],
+  params: {},
   status: 'idle',
 }
 
@@ -72,13 +78,13 @@ export const deleteCollectionItems = createAsyncThunk<
   },
 )
 
-export const getCollectionFields = createAsyncThunk<
-  GetFieldsResponse,
+export const getCollectionById = createAsyncThunk<
+  GetCollectionResponse,
   number,
   { rejectValue: ErrorResponse }
 >('collectionItems/getCollectionFields', async (id, { rejectWithValue }) => {
   try {
-    const response = await getFields(id)
+    const response = await getCollection(id)
     return response.data
   } catch (error) {
     return rejectWithValue({ ...(error as Object) } as ErrorResponse)
@@ -118,10 +124,13 @@ export const collectionItemsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(getItems.fulfilled, (state, action) => {
-        state.data = action.payload
+        state.items = action.payload.items
       })
-      .addCase(getCollectionFields.fulfilled, (state, action) => {
-        state.fields = action.payload.fields
+      .addCase(getCollectionById.fulfilled, (state, action) => {
+        const { items, fields, ...data } = action.payload
+        state.items = items
+        state.fields = fields
+        state.data = data
       })
 
       .addMatcher(isPending, (state) => {
@@ -149,7 +158,8 @@ export const selectCollectionItemsStatus = (state: RootState) =>
 export const selectCollectionItemsError = (state: RootState) =>
   state.collectionItems.error
 export const selectCollectionItems = (state: RootState) =>
-  state.collectionItems.data.items
+  state.collectionItems.items
+export const selectCollection = (state: RootState) => state.collectionItems.data
 export const selectCollectionisOwner = (state: RootState) =>
   state.collectionItems.data.isOwner
 export const selectCollectionFields = (state: RootState) =>

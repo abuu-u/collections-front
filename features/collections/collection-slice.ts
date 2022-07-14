@@ -9,8 +9,8 @@ import {
   CreateCollectionRequest,
   editCollection,
   EditCollectionRequest,
-  getCollection,
-  GetCollectionResponse,
+  getCollectionForEdit,
+  GetCollectionForEditResponse,
 } from 'shared/apis/collections-api'
 import { ErrorResponse } from 'shared/apis/error-response'
 import { SaveImageResponse, uploadImage } from 'shared/apis/images-api'
@@ -21,7 +21,7 @@ import {
 } from 'shared/lib/store'
 
 export interface CollectionState {
-  data: GetCollectionResponse
+  data: GetCollectionForEditResponse
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error?: ErrorResponse
 }
@@ -39,12 +39,12 @@ const initialState: CollectionState = {
 }
 
 export const getCollectionById = createAsyncThunk<
-  GetCollectionResponse,
+  GetCollectionForEditResponse,
   number,
   { rejectValue: ErrorResponse }
 >('collection/getCollectionById', async (id, { rejectWithValue }) => {
   try {
-    const response = await getCollection(id)
+    const response = await getCollectionForEdit(id)
     return response.data
   } catch (error) {
     return rejectWithValue({ ...(error as Object) } as ErrorResponse)

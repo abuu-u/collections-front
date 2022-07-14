@@ -54,10 +54,6 @@ const CollectionEdit: NextPage = () => {
     resolver: yupResolver(collectionSchema),
   })
 
-  useEffect(() => {
-    resetForm(data)
-  }, [resetForm, data])
-
   const { fields, remove } = useFieldArray({
     name: 'fields',
     control,
@@ -95,9 +91,10 @@ const CollectionEdit: NextPage = () => {
 
   useEffect(() => {
     if (status === 'succeeded' && isInitialLoad) {
+      resetForm(data)
       setIsInitialLoad(false)
     }
-  }, [isInitialLoad, status])
+  }, [data, isInitialLoad, resetForm, status])
 
   if (isInitialLoad && error?.status !== 404) {
     return <Loading open={true} />

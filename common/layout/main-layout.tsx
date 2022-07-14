@@ -8,7 +8,7 @@ import UserMenu from 'features/auth/user-menu'
 import LocaleSelect from 'features/locale/locale-select'
 import Search from 'features/search/search'
 import ThemeChangeIcon from 'features/theme/theme-change-icon'
-import { MouseEvent, PropsWithChildren, useEffect, useState } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { routes } from 'shared/constants/routes'
 
@@ -21,17 +21,6 @@ const MainLayout: React.ComponentType<PropsWithChildren<Properties>> = ({
   maxWidth,
 }) => {
   const [isClient, setIsClient] = useState(false)
-
-  const [anchorElementNav, setAnchorElementNav] = useState<HTMLElement>()
-
-  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElementNav(event.currentTarget)
-  }
-
-  const handleCloseNavMenu = () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    setAnchorElementNav(undefined)
-  }
 
   const intl = useIntl()
 
@@ -74,7 +63,7 @@ const MainLayout: React.ComponentType<PropsWithChildren<Properties>> = ({
           </Toolbar>
         </Container>
       </AppBar>
-      <Container sx={{ mt: '20px' }} maxWidth={maxWidth}>
+      <Container sx={{ my: '20px' }} maxWidth={maxWidth}>
         {children}
       </Container>
     </>

@@ -1,7 +1,12 @@
 import { urls } from 'shared/constants/urls'
 import { api } from './api'
 import { apiWithJwt } from './api-with-jwt'
-import { DateTimeValueData, StringValueData } from './items-api'
+import {
+  BoolValueData,
+  DateTimeValueData,
+  IntValueData,
+  StringValueData,
+} from './items-api'
 
 export interface GetCollectionsRequest {
   page: number
@@ -79,18 +84,38 @@ export type EditCollectionRequest = EditCollectionData & {
   imageUrl?: string
 }
 
+export interface ItemData {
+  id: number
+  name: string
+  stringValues: StringValueData[]
+  dateTimeValues: DateTimeValueData[]
+  boolValues: BoolValueData[]
+  intValues: IntValueData[]
+}
+
 export interface GetCollectionResponse {
   id: number
   name: string
   description: string
   topicId: number
-  imageUrl: string | null
+  imageUrl?: string
+  fields: FieldData[]
+  items: ItemData[]
+  isOwner: boolean
+}
+
+export interface GetCollectionForEditResponse {
+  id: number
+  name: string
+  description: string
+  topicId: number
+  imageUrl?: string
   fields: FieldData[]
 }
 
 export interface GetCollectionItemsRequest {
   sortFieldId?: number
-  sortBy?: 'asc' | 'desc' | null
+  sortBy?: 'asc' | 'desc'
   filterName?: string
   filterTags?: string[]
 }
@@ -104,7 +129,7 @@ export interface CollectionItemData {
 
 export interface GetCollectionItemsResponse {
   isOwner: boolean
-  items: CollectionItemData[]
+  items: ItemData[]
 }
 
 export interface GetFieldsResponse {
@@ -157,6 +182,13 @@ export const editCollection = async (data: EditCollectionRequest) => {
 
 export const deleteCollection = async (id: number) => {
   const response = await apiWithJwt.delete(`${urls.COLLECTIONS}/${id}`)
+  return response
+}
+
+export const getCollectionForEdit = async (id: number) => {
+  const response = await apiWithJwt.get<GetCollectionForEditResponse>(
+    `${urls.COLLECTIONS}/${id}/for-edit`,
+  )
   return response
 }
 
