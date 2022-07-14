@@ -3,36 +3,28 @@ import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Input from 'common/input'
-import {
-  ChangeEventHandler,
-  ComponentType,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { ItemCreateFields } from 'pages/collections/[id]/items/[...slug]'
+import { ComponentType, useEffect, useRef, useState } from 'react'
+import { Controller, UseFieldArrayAppend, useForm } from 'react-hook-form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useAppDispatch, useAppSelector } from 'shared/lib/store'
 import { searchTagsByText, selectTags } from './item-slice'
 import { tagSchema } from './item-validation'
 
 interface Properties {
-  onAdd: (tag: string) => void
+  append: UseFieldArrayAppend<ItemCreateFields, 'tags'>
 }
 
 const SEARCH_TAGS_COUNT = 10
 
-const TagCreator: ComponentType<Properties> = ({ onAdd }) => {
+const TagCreator: ComponentType<Properties> = ({ append }) => {
   const intl = useIntl()
 
   const {
-    register,
     getValues,
     trigger,
-    setValue,
     control,
     reset,
-    resetField,
     formState: { errors, isValid },
   } = useForm<{ value: string }>({
     defaultValues: {
@@ -46,14 +38,12 @@ const TagCreator: ComponentType<Properties> = ({ onAdd }) => {
 
   const timeout = useRef<NodeJS.Timeout>()
 
-  const handleTagChange: ChangeEventHandler<
-    HTMLInputElement | HTMLTextAreaElement
-  > = (event_) => {
+  const handleTagChange = (data: string) => {
     clearTimeout(timeout.current)
     timeout.current = setTimeout(async () => {
       dispatch(
         searchTagsByText({
-          str: event_.currentTarget.value,
+          str: data,
           count: SEARCH_TAGS_COUNT,
         }),
       )
@@ -64,12 +54,11 @@ const TagCreator: ComponentType<Properties> = ({ onAdd }) => {
 
   useEffect(() => {
     if (isValid && isAdding) {
-      onAdd(getValues().value)
+      append({ value: getValues().value })
       reset()
       setIsAdding(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAdding, getValues, isValid, reset])
+  }, [isAdding, getValues, isValid, reset, append])
 
   const handleAdd = () => {
     clearTimeout(timeout.current)
@@ -82,24 +71,28 @@ const TagCreator: ComponentType<Properties> = ({ onAdd }) => {
       <Controller
         name="value"
         control={control}
-        render={({ field }) => (
+        render={({ field: { onChange, ref, value, ...field } }) => (
           <Autocomplete
-            {...field}
+            value={{ label: value }}
             options={options}
-            freeSolo
             fullWidth
+            freeSolo
+            filterOptions={(x) => x}
+            onChange={(_, data) => {
+              onChange((data as { label: string })?.label)
+            }}
+            onInputChange={(_, data) => handleTagChange(data)}
             renderInput={(parameters) => (
               <Input
+                {...field}
                 label={intl.formatMessage({
                   id: 'item.tag',
                 })}
                 sx={{ mb: 2 }}
+                inputRef={ref}
                 {...parameters}
                 error={errors.value?.message}
-                onChange={(event_) => {
-                  field.onChange(event_)
-                  handleTagChange(event_)
-                }}
+                onChange={onChange}
               />
             )}
           />

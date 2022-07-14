@@ -12,12 +12,10 @@ import { NextLinkComposed } from 'common/link'
 import Loading from 'common/loading'
 import { useUser } from 'features/auth/use-user'
 import {
-  addTag,
   createCollectionItem,
   editCollectionItem,
   getItemFields,
   getItemForEdit,
-  removeTag,
   reset,
   selectItem,
   selectItemError,
@@ -30,7 +28,7 @@ import type { NextPage } from 'next'
 import DefaultErrorPage from 'next/error'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { FieldType } from 'shared/apis/collections-api'
 import { EditItemRequest } from 'shared/apis/items-api'
@@ -58,15 +56,19 @@ const ItemCreate: NextPage = () => {
     control,
     reset: resetForm,
     formState: { errors },
-  } = useForm<EditItemRequest>({
+  } = useForm<ItemCreateFields>({
     defaultValues: data,
     resolver: yupResolver(itemSchema),
   })
 
-  useEffect(() => {
-    resetForm(data)
-  }, [resetForm, data])
-
+  const {
+    fields: tags,
+    append,
+    remove,
+  } = useFieldArray({
+    name: 'tags',
+    control,
+  })
   const [type, setType] = useState('')
 
   const handleFormSubmit = handleSubmit(async (data) => {
@@ -119,9 +121,12 @@ const ItemCreate: NextPage = () => {
 
   useEffect(() => {
     if (status === 'succeeded' && isInitialLoad) {
+      if (type === 'edit') {
+        resetForm(data)
+      }
       setIsInitialLoad(false)
     }
-  }, [isInitialLoad, status])
+  }, [data, isInitialLoad, resetForm, status, type])
 
   if (isInitialLoad && error?.status !== 404) {
     return <Loading open={true} />
@@ -167,17 +172,17 @@ const ItemCreate: NextPage = () => {
         />
 
         <Stack direction="row" flexWrap="wrap" alignItems="flex-start">
-          {data.tags.map((item, index) => (
+          {tags.map((item, index) => (
             <Chip
               sx={{ margin: 1 }}
               key={index}
-              label={item}
-              onDelete={() => dispatch(removeTag(index))}
+              label={item.value}
+              onDelete={() => remove(index)}
             />
           ))}
         </Stack>
 
-        <TagCreator onAdd={(tag) => dispatch(addTag(tag))} />
+        <TagCreator append={append} />
 
         {fields
           .filter(

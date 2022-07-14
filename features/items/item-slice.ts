@@ -4,6 +4,7 @@ import {
   isPending,
   PayloadAction,
 } from '@reduxjs/toolkit'
+import { ItemCreateFields } from 'pages/collections/[id]/items/[...slug]'
 import {
   FieldData,
   getFields,
@@ -12,10 +13,8 @@ import {
 } from 'shared/apis/collections-api'
 import { ErrorResponse } from 'shared/apis/error-response'
 import {
-  AddItemRequest,
   createItem,
   editItem,
-  EditItemRequest,
   getItemForEditing,
   GetItemForEditingResponse,
   searchTags,
@@ -49,33 +48,30 @@ const initialState: ItemState = {
   tags: [],
 }
 
-const transformDateTimes = <
-  T extends Record<string, any> & {
-    dateTimeFields: EditItemRequest['dateTimeFields']
-  },
->(
-  data: T,
-) => {
+const formIntoData = (data: ItemCreateFields) => {
+  const { dateTimeFields, tags, ...restData } = data
+
   return {
-    ...data,
-    dateTimeFields: data.dateTimeFields.map((it) => ({
+    ...restData,
+    dateTimeFields: dateTimeFields.map((it) => ({
       fieldId: it.fieldId,
       value: new Date(it.value).toISOString(),
     })),
+    tags: tags.map((tag) => tag.value),
   }
 }
 
 export const createCollectionItem = createAsyncThunk<
   void,
   {
-    data: AddItemRequest
+    data: ItemCreateFields
     collectionId: number
   },
   { rejectValue: ErrorResponse }
 >('item/createCollectionItem', async (data, { rejectWithValue }) => {
   try {
     const response = await createItem(
-      transformDateTimes(data.data),
+      formIntoData(data.data),
       data.collectionId,
     )
     return response.data
@@ -87,16 +83,13 @@ export const createCollectionItem = createAsyncThunk<
 export const editCollectionItem = createAsyncThunk<
   void,
   {
-    data: EditItemRequest
+    data: ItemCreateFields
     collectionId: number
   },
   { rejectValue: ErrorResponse }
 >('item/editCollectionItem', async (data, { rejectWithValue }) => {
   try {
-    const response = await editItem(
-      transformDateTimes(data.data),
-      data.collectionId,
-    )
+    const response = await editItem(formIntoData(data.data), data.collectionId)
     return response.data
   } catch (error) {
     return rejectWithValue({ ...(error as Object) } as ErrorResponse)
@@ -194,7 +187,8 @@ export const { reset, removeTag, addTag } = itemSlice.actions
 export const selectItemStatus = (state: RootState) => state.item.status
 export const selectItemError = (state: RootState) => state.item.error
 export const selectItemFields = (state: RootState) => state.item.fields
-export const selectTags = (state: RootState) => state.item.tags
+export const selectTags = (state: RootState) =>
+  state.item.tags.map((tag) => ({ label: tag }))
 export const selectItem = (state: RootState) => {
   const data = state.item.data
   return {
@@ -203,6 +197,7 @@ export const selectItem = (state: RootState) => {
       ...date,
       value: date.value.slice(0, 10),
     })),
+    tags: data.tags.map((tag) => ({ value: tag })),
   }
 }
 
