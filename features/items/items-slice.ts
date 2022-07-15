@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, isPending } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ErrorResponse } from 'shared/apis/error-response'
 import {
   createComment,
@@ -14,6 +14,7 @@ import {
 import {
   AppDispatch,
   isFulfilledAction,
+  isPendingAction,
   isRejectedAction,
   RootState,
 } from 'shared/lib/store'
@@ -74,7 +75,7 @@ export const getItemComments = createAsyncThunk<
   GetCommentsResponse,
   number,
   { rejectValue: ErrorResponse }
->('items/getItemComments', async (id, { rejectWithValue }) => {
+>('items/getItemComments[local]', async (id, { rejectWithValue }) => {
   try {
     const response = await getComments(id)
     return response.data
@@ -158,7 +159,7 @@ export const itemsSlice = createSlice({
         state.data.likesCount -= 1
       })
 
-      .addMatcher(isPending, (state) => {
+      .addMatcher(isPendingAction('items/'), (state) => {
         state.status = 'loading'
         state.error = undefined
       })

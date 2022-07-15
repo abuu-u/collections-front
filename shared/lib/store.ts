@@ -18,6 +18,13 @@ import searchReducer from 'features/search/search-slice'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { ErrorResponse } from 'shared/apis/error-response'
 
+export const isPendingAction =
+  <T>(startsWith: string) =>
+  (action: FulfilledAction<T>): action is FulfilledAction<T> =>
+    !action.type.endsWith('[local]/pending') &&
+    action.type.endsWith('/pending') &&
+    action.type.startsWith(startsWith)
+
 export const isFulfilledAction =
   <T>(startsWith: string) =>
   (action: FulfilledAction<T>): action is FulfilledAction<T> =>

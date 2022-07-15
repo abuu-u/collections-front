@@ -135,7 +135,8 @@ const Item: NextPage = () => {
               </Typography>
             )
 
-          case FieldType.String || FieldType.MultiLineString:
+          case FieldType.String:
+          case FieldType.MultiLineString:
             const string = item.stringValues.find(
               (value) => value.fieldId === field.id,
             )
